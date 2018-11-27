@@ -31,14 +31,9 @@ class CoefficientExtractionPlugin implements Plugin<Project> {
 
 
             def kinds = [
-            "ema":          new EMAProcess(),
             "straight":     new STRAIGHTProcess(),
             "straightdnn" : new STRAIGHTDNNProcess(),
-            "spline":       new SplineProcess(),
             "world":        new WorldProcess(),
-            "straightema":  new STRAIGHTEMAProcess(),
-            "straightemadnn":  new STRAIGHTEMADNNProcess(),
-            "weight":       new WeightProcess()
             ];
 
             if (project.configurationExtraction.user_configuration != null)

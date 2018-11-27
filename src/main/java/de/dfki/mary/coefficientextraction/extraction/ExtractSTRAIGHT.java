@@ -30,7 +30,6 @@ public class ExtractSTRAIGHT extends ExtractBase
     // magic number for turning off normalization (72089600 = 2200 * 32768)
     private static final int straight_magic = 72089600;
     private String straight_path;
-    private int sample_rate;
     private float frameshift;
     private int mini_F0;
     private int maxi_F0;
@@ -55,16 +54,11 @@ public class ExtractSTRAIGHT extends ExtractBase
             throw new IllegalArgumentException("path \"" + straight_path + "\" doesn't contain straight!");
         }
 
-        setSampleRate(48000);
         setFrameshift(5);
         setMinimumF0(110);
         setMaximumF0(280);
     }
 
-    public void setSampleRate(int sample_rate)
-    {
-        this.sample_rate = sample_rate;
-    }
 
     public void setFrameshift(float frameshift)
     {
