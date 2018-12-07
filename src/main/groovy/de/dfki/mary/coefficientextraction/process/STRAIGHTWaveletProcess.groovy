@@ -13,10 +13,12 @@ import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.bundling.Zip
 
 /* Helpers import */
+import de.dfki.mary.coefficientextraction.process.task.ExtractSTRAIGHTTask;
+import de.dfki.mary.coefficientextraction.process.task.ExtractWaveletTask;
 import de.dfki.mary.coefficientextraction.process.task.ExtractVUVTask;
-import de.dfki.mary.coefficientextraction.process.task.ExtractInterpolatedF0Task;
 
-class STRAIGHTDNNProcess extends STRAIGHTProcess
+
+class STRAIGHTWaveletProcess extends STRAIGHTProcess
 {
     // FIXME: where filename is defined !
     public void addTasks(Project project)
@@ -39,15 +41,16 @@ class STRAIGHTDNNProcess extends STRAIGHTProcess
         }
 
         /**
-         *  Task which generates an interpolated F0 from the log f0
+         *  This task generate the log f0 file from the f0 file.
          *
          */
-        project.task('extractInterpolatedF0', type: ExtractInterpolatedF0Task) {
-            description "Task which interpolate the f0"
+        project.task('extractCWT', type: ExtractWaveletTask) {
+            dependsOn.add("configurationExtraction")
+            description "Task which converts f0 to cwt file"
 
             // Define directories
-            lf0_dir = project.extractLF0.lf0_dir
-            interpolated_lf0_dir = new File("$project.buildDir/interpolated_lf0/")
+            f0_dir = project.extractSTRAIGHT.f0_dir
+            cwt_dir = new File("$project.buildDir/cwt/")
 
             // Define list_basenames
             list_basenames = project.configuration.list_basenames
@@ -58,9 +61,8 @@ class STRAIGHTDNNProcess extends STRAIGHTProcess
          */
         project.task('extract') {
             dependsOn.add("extractMGC")
-            dependsOn.add("extractLF0")
             dependsOn.add("extractVUV")
-            dependsOn.add("extractInterpolatedF0")
+            dependsOn.add("extractCWT")
             dependsOn.add("extractBAP")
         }
     }

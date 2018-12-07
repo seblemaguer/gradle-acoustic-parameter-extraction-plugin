@@ -28,7 +28,7 @@ public class ExtractWavelet extends ExtractBase
             throw new Exception("extToFile does not contain\"" + EXT + "\" associated output file path");
 
         // 2. Prepare command
-        String command = WAVELET_CMD + " ";
+        String command = WAVELET_CMD + " -B ";
         if (getConfigurationFile() != null)
             command += "-c " + getConfigurationFile().toString() + " ";
         command += input_file.toString() + " " + extToFile.get(EXT);

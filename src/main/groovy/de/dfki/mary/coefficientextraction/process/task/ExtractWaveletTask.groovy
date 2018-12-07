@@ -14,13 +14,13 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.*
 
 // Extraction helper class
-import de.dfki.mary.coefficientextraction.extraction.ExtractVUV
+import de.dfki.mary.coefficientextraction.extraction.ExtractWavelet
 
 /**
- *  Definition of the task type to extract voice/unvoice pattern
+ *  Definition of the task type to convert f0 to wavelet
  *
  */
-public class ExtractVUVTask extends DefaultTask {
+public class ExtractWaveletTask extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
@@ -32,9 +32,9 @@ public class ExtractVUVTask extends DefaultTask {
     @InputDirectory
     final DirectoryProperty f0_dir = newInputDirectory()
 
-    /** The directory containing the voice/unvoice pattern files */
+    /** The directory containing the wavelet files */
     @OutputDirectory
-    final DirectoryProperty vuv_dir = newOutputDirectory()
+    final DirectoryProperty cwt_dir = newOutputDirectory()
 
     /**
      *  The constructor which defines which worker executor is going to achieve the conversion job
@@ -42,7 +42,7 @@ public class ExtractVUVTask extends DefaultTask {
      *  @param workerExecutor the worker executor
      */
     @Inject
-    public ExtractVUVTask(WorkerExecutor workerExecutor) {
+    public ExtractWaveletTask(WorkerExecutor workerExecutor) {
         super();
         this.workerExecutor = workerExecutor;
     }
@@ -56,15 +56,15 @@ public class ExtractVUVTask extends DefaultTask {
         for (String basename: list_basenames.getAsFile().get().readLines()) {
             // FIXME: hardcoded extension
             File f0_file  = new File(f0_dir.getAsFile().get(), basename + ".f0");
-            File vuv_file = new File(vuv_dir.getAsFile().get(), basename + ".vuv");
+            File cwt_file = new File(cwt_dir.getAsFile().get(), basename + ".cwt");
 
             // Submit the execution
-            workerExecutor.submit(ExtractVUVWorker.class,
+            workerExecutor.submit(ExtractWaveletWorker.class,
                                   new Action<WorkerConfiguration>() {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(f0_file, vuv_file, project.configuration.user_configuration);
+                        config.params(f0_file, cwt_file, project.configuration.user_configuration);
                     }
                 });
         }
@@ -73,14 +73,14 @@ public class ExtractVUVTask extends DefaultTask {
 
 
 /**
- *  Worker class which extract the voice/unvoice pattern from the f0 file
+ *  Worker class which achieve the f0 conversion to wavelet
  *
  */
-class ExtractVUVWorker implements Runnable {
+class ExtractWaveletWorker implements Runnable {
     /** The input F0 file */
     private final File input_file;
 
-    /** The generated VUV file */
+    /** The generated wavelet file */
     private final File output_file;
 
     /** The configuration object */
@@ -90,11 +90,11 @@ class ExtractVUVWorker implements Runnable {
      *  The contructor which initialize the worker
      *
      *  @param input_file the input F0 file
-     *  @param output_file the output VUV file
+     *  @param output_file the output wavelet file
      *  @param configuration the configuration object
      */
     @Inject
-    public ExtractVUVWorker(File input_file, File output_file, Object configuration) {
+    public ExtractWaveletWorker(File input_file, File output_file, Object configuration) {
 	this.input_file = input_file;
 	this.output_file = output_file;
         this.configuration = configuration
@@ -108,11 +108,17 @@ class ExtractVUVWorker implements Runnable {
     public void run() {
 
         // Define extractor
-        def extractor = new ExtractVUV();
+        def extractor = new ExtractWavelet();
+
+        // // Prepare extractor configuration (FIXME: nothing for now, but the configuration file maybe?)
+        // configuration.models.cmp.streams.each { stream ->
+        //     if (stream.kind ==  "cwt") {
+        //     }
+        // }
 
         // Define output files
         def extToFile = new Hashtable<String, String>()
-        extToFile.put("vuv".toString(), output_file)
+        extToFile.put("cwt".toString(), output_file)
         extractor.setOutputFiles(extToFile)
 
         // Run extraction

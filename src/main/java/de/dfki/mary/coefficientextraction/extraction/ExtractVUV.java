@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
 
@@ -20,36 +23,34 @@ public class ExtractVUV extends ExtractBase
 
     public void extract(File input_file) throws Exception
     {
-        // 2. extraction
-        String command = "cat " + input_file.toString() + " | ";
-        command += "sopr -magic -1.0E+10 -m 0.0 -a 1.0 -MAGIC 0.0 > " + extToFile.get("vuv").toString();
+        // Load byte array of data
+        byte[] data_bytes = Files.readAllBytes(input_file.toPath());
+        ByteBuffer buffer = ByteBuffer.wrap(data_bytes);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        String[] cmd = {"bash", "-c", command};
-        Process p = Runtime.getRuntime().exec(cmd);
-        p.waitFor();
+        // Compute size
+        int T = data_bytes.length / Float.BYTES;
 
-
-        BufferedReader reader =
-            new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-        String line = "";
-        // while ((line = reader.readLine())!= null) {
-        //         System.out.println(line);
-        // }
-
-
-        // Error stream => throw exception if not empty
-        StringBuilder sb = new StringBuilder();
-        reader =
-            new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-        line = "";
-        while ((line = reader.readLine())!= null) {
-            sb.append(line + "\n");
-        }
-        if (!sb.toString().isEmpty())
+        // Generate vector C
+        float[] data = new float[T];
+        for (int i=0; i<T; i++)
         {
-            throw new Exception(sb.toString());
+            float f = buffer.getFloat();
+            if (Float.isNaN(f))
+            {
+                throw new Exception(input_file.toString() + " contains nan values! ");
+            }
+            if (f == 0.0)
+                data[i] = 0;
+            else
+                data[i] = 1.0f;
         }
+
+        // Saving VUV mask
+        ByteBuffer output_buffer = ByteBuffer.allocate(data_bytes.length);
+        output_buffer.asFloatBuffer().put(data);
+        output_buffer.order(ByteOrder.LITTLE_ENDIAN);
+        byte[] output_data_bytes = output_buffer.array();
+        Files.write(extToFile.get("vuv").toPath(), output_data_bytes);
     }
 }

@@ -144,7 +144,6 @@ class ExtractSTRAIGHTWorker implements Runnable {
             }
         }
         extractor.setFrameshift(configuration.signal.frameshift)
-        extractor.setSampleRate(configuration.signal.samplerate)
 
 
         // Define output files
