@@ -69,6 +69,14 @@ class STRAIGHTProcess implements ProcessInterface
             // Define list_basenames
             list_basenames = project.configuration.list_basenames
         }
+    }
+
+
+    // FIXME: where filename is defined !
+    @Override
+    public void addTasks(Project project)
+    {
+        addGenericTasks(project);
 
         /**
          *  This task generate the log f0 file from the f0 file.
@@ -85,15 +93,6 @@ class STRAIGHTProcess implements ProcessInterface
             // Define list_basenames
             list_basenames = project.configuration.list_basenames
         }
-
-    }
-
-
-    // FIXME: where filename is defined !
-    @Override
-    public void addTasks(Project project)
-    {
-        addGenericTasks(project);
 
         /**
          * extraction generic task

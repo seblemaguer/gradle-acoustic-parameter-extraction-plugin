@@ -118,8 +118,6 @@ public class ExtractMGC extends ExtractBase
     public void extractFromSpectrum(String input_file_name, String output_file_name)
         throws Exception
     {
-        Process p;
-
         // 1. Generate full command
         String command = "cat " + input_file_name + " |";
         if (gamma == 0)
@@ -139,31 +137,7 @@ public class ExtractMGC extends ExtractBase
 
 
         // 2. extraction
-        String[] cmd = {"bash", "-c", command};
-        p = Runtime.getRuntime().exec(cmd);
-        p.waitFor();
-
-
-        BufferedReader reader =
-            new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-        String line = "";
-        // while ((line = reader.readLine())!= null) {
-        //         System.out.println(line);
-        // }
-
-        StringBuilder sb = new StringBuilder();
-        reader =
-            new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-        line = "";
-        while ((line = reader.readLine())!= null) {
-            sb.append(line + "\n");
-        }
-        if (!sb.toString().isEmpty())
-        {
-            throw new Exception(sb.toString());
-        }
+        run(command);
     }
 
 

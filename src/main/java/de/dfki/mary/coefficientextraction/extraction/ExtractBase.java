@@ -27,20 +27,8 @@ public abstract class ExtractBase implements ExtractInterface
         Process p = Runtime.getRuntime().exec(cmd);
         p.waitFor();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        // while ((line = reader.readLine())!= null) {
-        //         System.out.println(line);
-        // }
-
-        StringBuilder sb = new StringBuilder();
-        reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        while ((line = reader.readLine())!= null) {
-            sb.append(line + "\n");
+        if (p.exitValue() != 0) {
+            throw new Exception("Command failed: " + command);
         }
-        // if (!sb.toString().isEmpty())
-        // {
-        //     throw new Exception(sb.toString());
-        // }
     }
 }

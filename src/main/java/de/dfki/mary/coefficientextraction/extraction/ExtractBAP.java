@@ -39,8 +39,6 @@ public class ExtractBAP extends ExtractBase
     private double freqwarp;
     private int order;
 
-
-
     public double getDeterminantThreshold() {
         return determinant_threshold;
     }
@@ -162,38 +160,12 @@ public class ExtractBAP extends ExtractBase
 
     public void extract(File input_file) throws Exception
     {
-        Process p;
-
         // 1. Generate full command
         String command = "cat " + input_file.toString() + " |";
         command += 	"mcep -a " + freqwarp + " -m " + order + " -l 2048 -e 1.0E-08 -j 0 -f 0.0 -q 1 > " + extToFile.get("bap").toString();
 
         // 2. extraction
-        String[] cmd = {"bash", "-c", command};
-        p = Runtime.getRuntime().exec(cmd);
-        p.waitFor();
-
-
-        BufferedReader reader =
-            new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-        String line = "";
-        // while ((line = reader.readLine())!= null) {
-        //         System.out.println(line);
-        // }
-
-        StringBuilder sb = new StringBuilder();
-        reader =
-            new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-        line = "";
-        while ((line = reader.readLine())!= null) {
-            sb.append(line + "\n");
-        }
-        if (!sb.toString().isEmpty())
-        {
-            throw new Exception(sb.toString());
-        }
+        run(command);
     }
 
     // {
