@@ -21,147 +21,131 @@ import java.nio.file.StandardOpenOption;
 import org.apache.commons.io.IOUtils;
 
 import jsptk.JSPTKWrapper;
-import java.util.Hashtable;
 
 /**
  * Coefficients extraction based on STRAIGHT
  *
  * @author <a href="mailto:slemaguer@coli.uni-saarland.de">Sébastien Le Maguer</a>
  */
-public class ExtractBAP extends ExtractBase
-{
-    private double determinant_threshold;
-    private int maximum_iteration;
-    private double periodogram_noise_value;
-    private int frame_length;
-    private int input_format;
-    private double samplerate;
-    private double freqwarp;
-    private int order;
+open class ExtractBAP: ExtractBase() {
+    var determinant_threshold: Double = 0.0
+    var maximum_iteration: Int = 0
+    var periodogram_noise_value: Double = 0.0
+    var frame_length: Int = 2048
+    var samplerate: Double = 48.0
+    var freqwarp: Double = 0.55
+    var order: Int = 24
+    var input_format: Int=1
 
-    public double getDeterminantThreshold() {
+    fun getDeterminantThreshold(): Double {
         return determinant_threshold;
     }
 
-    public void setDeterminantThreshold(double determinant_threshold) {
+    fun setDeterminantThreshold(determinant_threshold: Double) {
         this.determinant_threshold = determinant_threshold;
     }
 
-    public int getMaximumIteration() {
+    fun getMaximumIteration(): Int {
         return maximum_iteration;
     }
 
-    public void setMaximumIteration(int maximum_iteration) {
+    fun setMaximumIteration(maximum_iteration: Int) {
         this.maximum_iteration = maximum_iteration;
     }
 
-    public double getPeriodogramNoiseValue() {
+    fun getPeriodogramNoiseValue(): Double {
         return periodogram_noise_value;
     }
 
-    public void setPeriodogramNoiseValue(double periodogram_noise_value) {
+    fun setPeriodogramNoiseValue(periodogram_noise_value: Double) {
         this.periodogram_noise_value = periodogram_noise_value;
     }
 
-    public ExtractBAP()
-    {
-        setSampleRate(48f);
-        setFreqWarp(getSampleRate());
-        setOrder((int) 24);
-        setFrameLength(2048);
-        setPeriodogramNoiseValue((double) 1.0E-08);
-        setInputFormat(1);
-    }
-
-    private double getFreqWarp() {
+    fun getFreqWarp(): Double {
         return freqwarp;
     }
 
-    private void setFreqWarp(double samplerate)
-    {
+    fun setFreqWarp(samplerate: Double) {
 
-        if (samplerate == 8f)
+        if (samplerate == 8.0)
         {
-            freqwarp = 0.31f;
+            freqwarp = 0.31;
         }
-        else if (samplerate == 10f)
+        else if (samplerate == 10.0)
         {
-            freqwarp = 0.35f;
+            freqwarp = 0.35
         }
-        else if (samplerate == 12f)
+        else if (samplerate == 12.0)
         {
-            freqwarp = 0.37f;
+            freqwarp = 0.37
         }
-        else if (samplerate == 16f)
+        else if (samplerate == 16.0)
         {
-            freqwarp = 0.42f;
+            freqwarp = 0.42
         }
-        else if (samplerate == 22.5f)
+        else if (samplerate == 22.5)
         {
-            freqwarp = 0.45f;
+            freqwarp = 0.45
         }
-        else if (samplerate == 32f)
+        else if (samplerate == 32.0)
         {
-            freqwarp = 0.45f;
+            freqwarp = 0.45
         }
-        else if (samplerate == 44.1f)
+        else if (samplerate == 44.1)
         {
-            freqwarp = 0.53f;
+            freqwarp = 0.53
         }
-        else if (samplerate == 48f)
+        else if (samplerate == 48.0)
         {
-            freqwarp = 0.55f;
+            freqwarp = 0.55
         }
         else
         {
-            freqwarp = 0f; // FIXME: exception instead ?
+            freqwarp = 0.0 // FIXME: exception instead ?
         }
     }
 
-    public int getOrder() {
+    fun getOrder(): Int {
         return this.order;
     }
 
-    public void setOrder(int order)
-    {
+    fun setOrder(order: Int) {
         this.order = order;
     }
 
-    public void setMFCCLength(int length)
-    {
-        this.order = (int) (length - 1);
+    fun setMFCCLength(length: Int) {
+        this.order = (length - 1);
     }
 
-    public int getFrameLength() {
+    fun getFrameLength(): Int {
         return frame_length;
     }
 
-    public void setFrameLength(int frame_length) {
+    fun setFrameLength(frame_length: Int) {
         this.frame_length = frame_length;
     }
 
-    public int getInputFormat() {
+    fun getInputFormat(): Int {
         return input_format;
     }
 
-    public void setInputFormat(int input_format) {
+    fun setInputFormat(input_format: Int) {
         this.input_format = input_format;
     }
 
 
-    public double getSampleRate() {
+    fun getSampleRate(): Double {
         return this.samplerate;
     }
 
-    public void setSampleRate(double samplerate) {
+    fun setSampleRate(samplerate: Double) {
         this.samplerate = samplerate;
         setFreqWarp(this.samplerate);
     }
 
-    public void extract(File input_file) throws Exception
-    {
+    override fun extract(input_file: File)  {
         // 1. Generate full command
-        String command = "cat " + input_file.toString() + " |";
+        var command: String = "cat " + input_file.toString() + " |";
         command += 	"mcep -a " + freqwarp + " -m " + order + " -l 2048 -e 1.0E-08 -j 0 -f 0.0 -q 1 > " + extToFile.get("bap").toString();
 
         // 2. extraction
@@ -169,22 +153,22 @@ public class ExtractBAP extends ExtractBase
     }
 
     // {
-    //     // Load ap into double array
+    //     // Load ap Into Double array
     //     byte[] bytes = IOUtils.toByteArray(new FileInputStream(input_file));
     //     ByteBuffer in_bf = ByteBuffer.allocate(bytes.length);
     //     in_bf.order(ByteOrder.LITTLE_ENDIAN);
     //     in_bf.put(bytes);
     //     in_bf.rewind();
 
-    //     int length = (getFrameLength() / 2) + 1; // FIXME:
-    //     DoubleBuffer doubleBuffer = in_bf.asDoubleBuffer();
-    //     double[][] ap = new double[length][doubleBuffer.remaining()/length];
-    //     for(int t=0; t<length; t++){
-    //         doubleBuffer.get(ap[t]);
+    //     Int length = (getFrameLength() / 2) + 1; // FIXME:
+    //     DoubleBuffer DoubleBuffer = in_bf.asDoubleBuffer();
+    //     Double[][] ap = new Double[length][DoubleBuffer.remaining()/length];
+    //     for(Int t=0; t<length; t++){
+    //         DoubleBuffer.get(ap[t]);
     //     }
 
     //     // Compute bap using mcep
-    //     double[][] bap = JSPTKWrapper.mcep(ap, getOrder(),
+    //     Double[][] bap = JSPTKWrapper.mcep(ap, getOrder(),
     //                                        getFreqWarp(), 2, getMaximumIteration(), // FIXME: hardcoded
     //                                        0.001f, 1, getPeriodogramNoiseValue(),   // FIXME: hardcoded
     //                                        getDeterminantThreshold(), getInputFormat());
@@ -192,12 +176,12 @@ public class ExtractBAP extends ExtractBase
     //     // Generate byte buffer
     //     ByteBuffer out_bf = ByteBuffer.allocate(bap.length * bap[0].length * Float.BYTES);
     //     out_bf.order(ByteOrder.LITTLE_ENDIAN);
-    //     for (int t=0; t<bap.length; t++)
-    //         for (int d=0; d<bap[0].length; d++)
+    //     for (Int t=0; t<bap.length; t++)
+    //         for (Int d=0; d<bap[0].length; d++)
     //         out_bf.putFloat((float) ap[t][d]);
     //     out_bf.rewind();
 
-    //     // Save into file
+    //     // Save Into file
     //     FileOutputStream os = new FileOutputStream(extToFile.get("bap"));
     //     os.write(out_bf.array());
 
