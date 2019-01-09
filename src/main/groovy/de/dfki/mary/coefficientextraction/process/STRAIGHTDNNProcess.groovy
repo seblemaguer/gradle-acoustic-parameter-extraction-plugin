@@ -34,8 +34,6 @@ class STRAIGHTDNNProcess extends STRAIGHTProcess
             f0_dir = project.extractSTRAIGHT.f0_dir
             vuv_dir = new File("$project.buildDir/vuv/")
 
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
         /**
@@ -48,9 +46,6 @@ class STRAIGHTDNNProcess extends STRAIGHTProcess
             // Define directories
             lf0_dir = project.extractLF0.lf0_dir
             interpolated_lf0_dir = new File("$project.buildDir/interpolated_lf0/")
-
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
         /**

@@ -24,10 +24,6 @@ public class ExtractVUVTask extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
-    /** The list of files to manipulate */
-    @InputFile
-    final RegularFileProperty list_basenames = newInputFile()
-
     /** The directory containing f0 files */
     @InputDirectory
     final DirectoryProperty f0_dir = newInputDirectory()
@@ -53,10 +49,8 @@ public class ExtractVUVTask extends DefaultTask {
      */
     @TaskAction
     public void extract() {
-        for (String basename: list_basenames.getAsFile().get().readLines()) {
-            // FIXME: hardcoded extension
-            File f0_file  = new File(f0_dir.getAsFile().get(), basename + ".f0");
-            File vuv_file = new File(vuv_dir.getAsFile().get(), basename + ".vuv");
+        for (File f0_file: project.fileTree(f0_dir.get()).include('*.f0').collect()) {
+            File vuv_file = new File(vuv_dir.getAsFile().get(), f0_file.getName() - ".f0" + ".vuv");
 
             // Submit the execution
             workerExecutor.submit(ExtractVUVWorker.class,
@@ -64,7 +58,7 @@ public class ExtractVUVTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(f0_file, vuv_file, project.configuration.user_configuration);
+                        config.params(f0_file, vuv_file, project.vb_configuration);
                     }
                 });
         }

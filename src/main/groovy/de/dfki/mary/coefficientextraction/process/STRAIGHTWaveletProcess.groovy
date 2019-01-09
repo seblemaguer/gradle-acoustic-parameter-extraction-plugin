@@ -35,9 +35,6 @@ class STRAIGHTWaveletProcess extends STRAIGHTProcess
             // Define directories
             f0_dir = project.extractSTRAIGHT.f0_dir
             vuv_dir = new File("$project.buildDir/vuv/")
-
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
         /**
@@ -45,15 +42,11 @@ class STRAIGHTWaveletProcess extends STRAIGHTProcess
          *
          */
         project.task('extractCWT', type: ExtractWaveletTask) {
-            dependsOn.add("configurationExtraction")
             description "Task which converts f0 to cwt file"
 
             // Define directories
             f0_dir = project.extractSTRAIGHT.f0_dir
             cwt_dir = new File("$project.buildDir/cwt/")
-
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
         /**

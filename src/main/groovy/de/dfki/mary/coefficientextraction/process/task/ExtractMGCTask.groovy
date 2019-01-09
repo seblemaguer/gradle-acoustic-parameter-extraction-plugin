@@ -24,10 +24,6 @@ public class ExtractMGCTask extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
-    /** The list of files to manipulate */
-    @InputFile
-    final RegularFileProperty list_basenames = newInputFile()
-
     /** The directory containing sp files */
     @InputDirectory
     final DirectoryProperty sp_dir = newInputDirectory()
@@ -53,10 +49,8 @@ public class ExtractMGCTask extends DefaultTask {
      */
     @TaskAction
     public void extract() {
-        for (String basename: list_basenames.getAsFile().get().readLines()) {
-            // FIXME: hardcoded extension
-            File sp_file  = new File(sp_dir.getAsFile().get(), basename + ".sp");
-            File mgc_file = new File(mgc_dir.getAsFile().get(), basename + ".mgc");
+        for (File sp_file: project.fileTree(sp_dir.get()).include('*.sp').collect()) {
+            File mgc_file = new File(mgc_dir.getAsFile().get(), sp_file.getName() - ".sp" + ".mgc");
 
             // Submit the execution
             workerExecutor.submit(ExtractMGCWorker.class,
@@ -64,7 +58,7 @@ public class ExtractMGCTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(sp_file, mgc_file, project.configuration.user_configuration);
+                        config.params(sp_file, mgc_file, project.vb_configuration);
                     }
                 });
         }

@@ -24,10 +24,6 @@ public class ExtractSTRAIGHTTask extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
-    /** The list of files to manipulate */
-    @InputFile
-    final RegularFileProperty list_basenames = newInputFile()
-
     /** The directory containing wav files */
     @InputDirectory
     final DirectoryProperty wav_dir = newInputDirectory()
@@ -61,12 +57,11 @@ public class ExtractSTRAIGHTTask extends DefaultTask {
      */
     @TaskAction
     public void extract() {
-        for (String basename: list_basenames.getAsFile().get().readLines()) {
-            // FIXME: hardcoded extension
-            File wav_file   = new File(wav_dir.getAsFile().get(), basename + ".wav");
-            File sp_file = new File(sp_dir.getAsFile().get(), basename + ".sp");
-            File f0_file = new File(f0_dir.getAsFile().get(), basename + ".f0");
-            File ap_file = new File(ap_dir.getAsFile().get(), basename + ".ap");
+        for (File wav_file: project.fileTree(wav_dir.get()).include('*.wav').collect()) {
+
+            File sp_file = new File(sp_dir.getAsFile().get(), wav_file.getName() - ".wav" + ".sp");
+            File f0_file = new File(f0_dir.getAsFile().get(), wav_file.getName() - ".wav" + ".f0");
+            File ap_file = new File(ap_dir.getAsFile().get(), wav_file.getName() - ".wav" + ".ap");
 
             // Submit the execution
             workerExecutor.submit(ExtractSTRAIGHTWorker.class,
@@ -75,7 +70,7 @@ public class ExtractSTRAIGHTTask extends DefaultTask {
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
                         config.params(wav_file, sp_file, f0_file, ap_file,
-                                      project.configuration.user_configuration);
+                                      project.vb_configuration);
                     }
                 });
         }

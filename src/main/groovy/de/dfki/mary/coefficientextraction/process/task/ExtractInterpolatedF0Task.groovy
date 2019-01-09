@@ -24,10 +24,6 @@ public class ExtractInterpolatedF0Task extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
-    /** The list of files to manipulate */
-    @InputFile
-    final RegularFileProperty list_basenames = newInputFile()
-
     /** The directory containing f0 files */
     @InputDirectory
     final DirectoryProperty lf0_dir = newInputDirectory()
@@ -53,10 +49,8 @@ public class ExtractInterpolatedF0Task extends DefaultTask {
      */
     @TaskAction
     public void extract() {
-        for (String basename: list_basenames.getAsFile().get().readLines()) {
-            // FIXME: hardcoded extension
-            File lf0_file  = new File(lf0_dir.getAsFile().get(), basename + ".lf0");
-            File interpolated_lf0_file = new File(interpolated_lf0_dir.getAsFile().get(), basename + ".lf0");
+        for (File lf0_file: project.fileTree(lf0_dir.get()).include('*.lf0').collect()) {
+            File interpolated_lf0_file = new File(interpolated_lf0_dir.getAsFile().get(), lf0_file.getName());
 
             // Submit the execution
             workerExecutor.submit(ExtractInterpolatedF0Worker.class,
@@ -64,7 +58,7 @@ public class ExtractInterpolatedF0Task extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(lf0_file, interpolated_lf0_file, project.configuration.user_configuration);
+                        config.params(lf0_file, interpolated_lf0_file, project.vb_configuration);
                     }
                 });
         }

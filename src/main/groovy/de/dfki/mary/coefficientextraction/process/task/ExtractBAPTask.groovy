@@ -24,10 +24,6 @@ public class ExtractBAPTask extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
-    /** The list of files to manipulate */
-    @InputFile
-    final RegularFileProperty list_basenames = newInputFile()
-
     /** The directory containing aperiodicity files */
     @InputDirectory
     final DirectoryProperty ap_dir = newInputDirectory()
@@ -53,10 +49,8 @@ public class ExtractBAPTask extends DefaultTask {
      */
     @TaskAction
     public void extract() {
-        for (String basename: list_basenames.getAsFile().get().readLines()) {
-            // FIXME: hardcoded extension
-            File ap_file  = new File(ap_dir.getAsFile().get(), basename + ".ap")
-            File bap_file = new File(bap_dir.getAsFile().get(), basename + ".bap")
+        for (File ap_file: project.fileTree(ap_dir.get()).include('*.ap').collect()) {
+            File bap_file = new File(bap_dir.getAsFile().get(), ap_file.getName() - ".ap" + ".bap")
 
             // Submit the execution
             workerExecutor.submit(ExtractBAPWorker.class,
@@ -64,7 +58,7 @@ public class ExtractBAPTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(ap_file, bap_file, project.configuration.user_configuration);
+                        config.params(ap_file, bap_file, project.vb_configuration);
                     }
                 });
         }

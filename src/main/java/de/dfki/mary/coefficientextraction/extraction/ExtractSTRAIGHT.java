@@ -198,7 +198,7 @@ public class ExtractSTRAIGHT extends ExtractBase
 
         line = "";
         while ((line = reader.readLine())!= null) {
-            if (!(line.endsWith("/lib64/libc.so.6: not found"))) // FIXME: libc6 patch
+            if (!(line.endsWith("/lib64/libc.so.6: not found"))) // NOTE: libc6 patch for early matlab version
                 sb.append(line + "\n");
         }
         if (!sb.toString().isEmpty())

@@ -24,10 +24,6 @@ public class ExtractWaveletTask extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
-    /** The list of files to manipulate */
-    @InputFile
-    final RegularFileProperty list_basenames = newInputFile()
-
     /** The directory containing f0 files */
     @InputDirectory
     final DirectoryProperty f0_dir = newInputDirectory()
@@ -53,10 +49,8 @@ public class ExtractWaveletTask extends DefaultTask {
      */
     @TaskAction
     public void extract() {
-        for (String basename: list_basenames.getAsFile().get().readLines()) {
-            // FIXME: hardcoded extension
-            File f0_file  = new File(f0_dir.getAsFile().get(), basename + ".f0");
-            File cwt_file = new File(cwt_dir.getAsFile().get(), basename + ".cwt");
+        for (File f0_file: project.fileTree(f0_dir.get()).include('*.f0').collect()) {
+            File cwt_file = new File(cwt_dir.getAsFile().get(), f0_file.getName() - ".f0" + ".cwt");
 
             // Submit the execution
             workerExecutor.submit(ExtractWaveletWorker.class,
@@ -64,7 +58,7 @@ public class ExtractWaveletTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(f0_file, cwt_file, project.configuration.user_configuration);
+                        config.params(f0_file, cwt_file, project.vb_configuration);
                     }
                 });
         }

@@ -42,13 +42,10 @@ class WorldProcess implements ProcessInterface
             dependsOn.add("configurationExtraction")
 
             // Define directories
-            wav_dir = project.configuration.wav_dir
+            wav_dir = project.vb_configuration.data.wav_dir
             sp_dir = new File("$project.buildDir/sp/")
             f0_dir = new File("$project.buildDir/f0/")
             ap_dir = new File("$project.buildDir/ap/")
-
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
         /**
@@ -56,15 +53,11 @@ class WorldProcess implements ProcessInterface
          *
          */
         project.task('extractBAP', type: ExtractBAPTask) {
-            dependsOn.add("configurationExtraction")
             description "Task which converts ap to bap file"
 
             // Define directories
             ap_dir = project.extractWorld.ap_dir
             bap_dir = new File("$project.buildDir/bap/")
-
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
 
@@ -73,15 +66,11 @@ class WorldProcess implements ProcessInterface
          *
          */
         project.task('extractMGC', type: ExtractMGCTask) {
-            dependsOn.add("configurationExtraction")
             description "Task which converts sp to mgc file"
 
             // Define directories
             sp_dir = project.extractWorld.sp_dir
             mgc_dir = new File("$project.buildDir/mgc/")
-
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
         /**
@@ -89,15 +78,11 @@ class WorldProcess implements ProcessInterface
          *
          */
         project.task('extractLF0', type: ExtractLF0Task) {
-            dependsOn.add("configurationExtraction")
             description "Task which converts f0 to lf0 file"
 
             // Define directories
             f0_dir = project.extractWorld.f0_dir
             lf0_dir = new File("$project.buildDir/lf0/")
-
-            // Define list_basenames
-            list_basenames = project.configuration.list_basenames
         }
 
 

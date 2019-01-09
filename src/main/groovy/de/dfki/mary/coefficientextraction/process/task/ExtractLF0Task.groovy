@@ -24,10 +24,6 @@ public class ExtractLF0Task extends DefaultTask {
     /** The worker */
     private final WorkerExecutor workerExecutor;
 
-    /** The list of files to manipulate */
-    @InputFile
-    final RegularFileProperty list_basenames = newInputFile()
-
     /** The directory containing f0 files */
     @InputDirectory
     final DirectoryProperty f0_dir = newInputDirectory()
@@ -53,10 +49,8 @@ public class ExtractLF0Task extends DefaultTask {
      */
     @TaskAction
     public void extract() {
-        for (String basename: list_basenames.getAsFile().get().readLines()) {
-            // FIXME: hardcoded extension
-            File f0_file  = new File(f0_dir.getAsFile().get(), basename + ".f0");
-            File lf0_file = new File(lf0_dir.getAsFile().get(), basename + ".lf0");
+        for (File f0_file: project.fileTree(f0_dir.get()).include('*.f0').collect()) {
+            File lf0_file = new File(lf0_dir.getAsFile().get(), f0_file.getName() - ".f0" + ".lf0");
 
             // Submit the execution
             workerExecutor.submit(ExtractLF0Worker.class,
@@ -64,7 +58,7 @@ public class ExtractLF0Task extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(f0_file, lf0_file, project.configuration.user_configuration);
+                        config.params(f0_file, lf0_file, project.vb_configuration);
                     }
                 });
         }
