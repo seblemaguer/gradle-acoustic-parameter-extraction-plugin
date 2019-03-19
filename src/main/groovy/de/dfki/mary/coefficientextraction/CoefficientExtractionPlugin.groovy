@@ -27,7 +27,7 @@ class CoefficientExtractionPlugin implements Plugin<Project> {
         ];
 
 
-        def ext_method = project.vb_configuration.settings.extraction.kind;
+        def ext_method = project.gradle.vb_configuration.settings.extraction.kind;
         if (! kinds.containsKey(ext_method)) {
             throw new Exception("${ext_method} is not a valid extraction process")
         }

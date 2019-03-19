@@ -70,7 +70,7 @@ public class ExtractSTRAIGHTTask extends DefaultTask {
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
                         config.params(wav_file, sp_file, f0_file, ap_file,
-                                      project.vb_configuration);
+                                      project.gradle.vb_configuration);
                     }
                 });
         }

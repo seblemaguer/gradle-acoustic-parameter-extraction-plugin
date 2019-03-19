@@ -42,7 +42,7 @@ class WorldProcess implements ProcessInterface
             dependsOn.add("configurationExtraction")
 
             // Define directories
-            wav_dir = project.vb_configuration.data.wav_dir
+            wav_dir = project.gradle.vb_configuration.data.wav_dir
             sp_dir = new File("$project.buildDir/sp/")
             f0_dir = new File("$project.buildDir/f0/")
             ap_dir = new File("$project.buildDir/ap/")

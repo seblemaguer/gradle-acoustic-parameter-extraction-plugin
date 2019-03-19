@@ -58,7 +58,7 @@ public class ExtractMGCTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(sp_file, mgc_file, project.vb_configuration);
+                        config.params(sp_file, mgc_file, project.gradle.vb_configuration);
                     }
                 });
         }

@@ -58,7 +58,7 @@ public class ExtractVUVTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(f0_file, vuv_file, project.vb_configuration);
+                        config.params(f0_file, vuv_file, project.gradle.vb_configuration);
                     }
                 });
         }

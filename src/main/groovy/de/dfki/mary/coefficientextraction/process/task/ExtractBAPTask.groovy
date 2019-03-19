@@ -58,7 +58,7 @@ public class ExtractBAPTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(ap_file, bap_file, project.vb_configuration);
+                        config.params(ap_file, bap_file, project.gradle.vb_configuration);
                     }
                 });
         }

@@ -58,7 +58,7 @@ public class ExtractWaveletTask extends DefaultTask {
                     @Override
                     public void execute(WorkerConfiguration config) {
                         config.setIsolationMode(IsolationMode.NONE);
-                        config.params(f0_file, cwt_file, project.vb_configuration);
+                        config.params(f0_file, cwt_file, project.gradle.vb_configuration);
                     }
                 });
         }
