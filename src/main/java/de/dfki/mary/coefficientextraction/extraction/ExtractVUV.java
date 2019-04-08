@@ -48,8 +48,8 @@ public class ExtractVUV extends ExtractBase
 
         // Saving VUV mask
         ByteBuffer output_buffer = ByteBuffer.allocate(data_bytes.length);
-        output_buffer.asFloatBuffer().put(data);
         output_buffer.order(ByteOrder.LITTLE_ENDIAN);
+        output_buffer.asFloatBuffer().put(data);
         byte[] output_data_bytes = output_buffer.array();
         Files.write(extToFile.get("vuv").toPath(), output_data_bytes);
     }

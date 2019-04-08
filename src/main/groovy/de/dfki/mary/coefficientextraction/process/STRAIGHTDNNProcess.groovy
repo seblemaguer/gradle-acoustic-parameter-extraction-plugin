@@ -14,14 +14,30 @@ import org.gradle.api.tasks.bundling.Zip
 
 /* Helpers import */
 import de.dfki.mary.coefficientextraction.process.task.ExtractVUVTask;
+import de.dfki.mary.coefficientextraction.process.task.ExtractLF0Task;
 import de.dfki.mary.coefficientextraction.process.task.ExtractInterpolatedF0Task;
 
 class STRAIGHTDNNProcess extends STRAIGHTProcess
 {
     // FIXME: where filename is defined !
+    @Override
     public void addTasks(Project project)
     {
         addGenericTasks(project);
+
+
+        /**
+         *  This task generate the log f0 file from the f0 file.
+         *
+         */
+        project.task('extractLF0', type: ExtractLF0Task) {
+            description "Task which converts f0 to lf0 file"
+
+            // Define directories
+            f0_dir = project.extractSTRAIGHT.f0_dir
+            lf0_dir = new File("$project.buildDir/lf0/")
+        }
+
 
         /**
          *  Task which extract the voice/unvoice mask from the lf0
