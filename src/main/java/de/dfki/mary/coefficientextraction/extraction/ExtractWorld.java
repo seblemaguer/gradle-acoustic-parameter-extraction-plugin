@@ -83,9 +83,9 @@ public class ExtractWorld extends ExtractBase
         // Check directories
         for(String ext : Arrays.asList("ap", "f0", "sp")) {
             if (!extToFile.containsKey(ext))
-            {
-                throw new Exception("extToFile does not contains \"" + ext + "\" associated output file path");
-            }
+                {
+                    throw new Exception("extToFile does not contains \"" + ext + "\" associated output file path");
+                }
         }
 
         // Read audio
@@ -119,7 +119,7 @@ public class ExtractWorld extends ExtractBase
         bf.order(ByteOrder.LITTLE_ENDIAN);
         for (int t=0; t<sp.length; t++)
             for (int d=0; d<sp[0].length; d++)
-            bf.putFloat((float) sp[t][d]);
+                bf.putFloat((float) (20 * Math.log(sp[t][d])));
         bf.rewind();
 
         os = new FileOutputStream(extToFile.get("sp"));
@@ -130,7 +130,7 @@ public class ExtractWorld extends ExtractBase
         bf.order(ByteOrder.LITTLE_ENDIAN);
         for (int t=0; t<ap.length; t++)
             for (int d=0; d<ap[0].length; d++)
-            bf.putFloat((float) ap[t][d]);
+                bf.putFloat((float) (20 * Math.log(ap[t][d])));
         bf.rewind();
 
         os = new FileOutputStream(extToFile.get("ap"));
