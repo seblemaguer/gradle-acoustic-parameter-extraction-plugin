@@ -39,8 +39,6 @@ class WorldProcess implements ProcessInterface
          *  This task will generate the spectrum (.sp), the f0 (.f0) and the aperiodicity (.ap).
          */
         project.task('extractWorld', type: ExtractWorldTask) {
-            dependsOn.add("configurationExtraction")
-
             // Define directories
             wav_dir = project.gradle.vb_configuration.data.wav_dir
             sp_dir = new File("$project.buildDir/sp/")
