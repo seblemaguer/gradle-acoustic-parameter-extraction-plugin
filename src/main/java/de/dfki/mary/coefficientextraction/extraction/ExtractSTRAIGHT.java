@@ -75,49 +75,6 @@ public class ExtractSTRAIGHT extends ExtractBase
         this.maxi_F0 = F0;
     }
 
-    private double computeNormalisationRate(String input_file_name)
-        throws Exception
-    {
-        double nb_values = 0;
-        double mean = 0.0;
-        double norm_coef = 0.0;
-
-        RandomAccessFile aFile = new RandomAccessFile(input_file_name, "r");
-        FileChannel inChannel = aFile.getChannel();
-
-        // Skip header [FIXME: hard coded for wav files]
-        ByteBuffer buffer = ByteBuffer.allocate(44);
-        inChannel.read(buffer);
-        buffer.clear();
-
-        // Compute the variance of the data
-        buffer = ByteBuffer.allocate(1024);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-
-        while(inChannel.read(buffer) > 0)
-        {
-            buffer.flip();
-            for (int i = 0; i < buffer.limit(); i+=2) // FIXME: i += 2 => if short size changes ?
-            {
-                double tmp = (new Short(buffer.getShort())).doubleValue();
-                mean += tmp;
-                nb_values += 1;
-                norm_coef += tmp * tmp;
-            }
-            buffer.clear(); // do something with the data and clear/compact it.
-        }
-        inChannel.close();
-        aFile.close();
-
-        mean = mean / nb_values;
-        norm_coef = norm_coef/nb_values - mean * mean; // Variance first !
-
-        // Appl
-        norm_coef = (1.0/Math.sqrt(norm_coef)) * straight_magic;
-
-        return norm_coef;
-    }
-
     private File generateScript(String input_file_name) throws Exception
     {
         // Normalisation coefficient computation
@@ -135,7 +92,6 @@ public class ExtractSTRAIGHT extends ExtractBase
         context.put("frameshift", this.frameshift);
         context.put("mini_f0", this.mini_F0);
         context.put("maxi_f0", this.maxi_F0);
-        context.put("norm_coef", norm_coef);
         context.put("input_file_name", input_file_name);
         context.put("f0_output", extToFile.get("f0"));
         context.put("sp_output", extToFile.get("sp"));

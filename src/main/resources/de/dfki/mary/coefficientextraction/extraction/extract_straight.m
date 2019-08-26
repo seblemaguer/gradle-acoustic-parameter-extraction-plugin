@@ -10,7 +10,6 @@ prm.F0searchUpperBound = $maxi_f0;
 [x, fs] = audioread('$input_file_name');
 [f0, ap] = exstraightsource(x, fs, prm);
 [sp] = exstraightspec(x, f0, fs, prm);
-sp = sp * $norm_coef;
 
 % Save the coefficients
 f_f0 = fopen('$f0_output', 'wb');

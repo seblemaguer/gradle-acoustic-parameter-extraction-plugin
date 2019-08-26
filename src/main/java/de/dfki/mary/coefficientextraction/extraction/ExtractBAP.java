@@ -110,7 +110,8 @@ public class ExtractBAP extends ExtractBase
         }
         else if (samplerate == 48f)
         {
-            freqwarp = 0.55f;
+            // freqwarp = 0.55f;
+            freqwarp = 0.77f;
         }
         else
         {
@@ -161,8 +162,8 @@ public class ExtractBAP extends ExtractBase
     public void extract(File input_file) throws Exception
     {
         // 1. Generate full command
-        String command = "cat " + input_file.toString() + " |";
-        command += 	"mcep -a " + freqwarp + " -m " + order + " -l 2048 -e 1.0E-08 -j 0 -f 0.0 -q 1 > " + extToFile.get("bap").toString();
+        String command = "sopr -R -m 32768.0 " + input_file.toString() + " |";
+        command += 	"mcep -a " + freqwarp + " -m " + order + " -l 2048 -e 1.0E-08 -j 0 -f 0.0 -q 3 > " + extToFile.get("bap").toString();
 
         // 2. extraction
         run(command);

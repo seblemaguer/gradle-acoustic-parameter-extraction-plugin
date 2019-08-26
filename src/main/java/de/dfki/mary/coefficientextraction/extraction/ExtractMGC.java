@@ -72,7 +72,7 @@ public class ExtractMGC extends ExtractBase
         }
         else if (sampleratekHz == 48)
         {
-            freqwarp = 0.55f;
+            freqwarp = 0.77f; //FIXME: ???
         }
         else
         {
@@ -119,7 +119,7 @@ public class ExtractMGC extends ExtractBase
         throws Exception
     {
         // 1. Generate full command
-        String command = "cat " + input_file_name + " |";
+        String command = "sopr -R -m 32768.0 " + input_file_name + " |";
         if (gamma == 0)
         {
             command += 	"mcep -a " + freqwarp + " -m " + order + " -l 2048 -e 1.0E-08 -j 0 -f 0.0 -q 3 > " + output_file_name;
