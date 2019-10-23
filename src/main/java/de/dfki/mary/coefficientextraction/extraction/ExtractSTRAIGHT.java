@@ -77,9 +77,6 @@ public class ExtractSTRAIGHT extends ExtractBase
 
     private File generateScript(String input_file_name) throws Exception
     {
-        // Normalisation coefficient computation
-        double norm_coef = computeNormalisationRate(input_file_name);
-
         // Init template engine
         VelocityEngine ve = new VelocityEngine();
         ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");

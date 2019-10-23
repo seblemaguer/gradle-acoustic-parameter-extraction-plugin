@@ -24,14 +24,7 @@ import de.dfki.mary.coefficientextraction.process.task.ExtractBAPTask;
 class WorldProcess implements ProcessInterface
 {
 
-    /**
-     *  Method to add the task to the given project.
-     *
-     *
-     *  @param project the project which needs the coefficient extraction
-     */
-    @Override
-    public void addTasks(Project project)
+    public void addGenericTasks(Project project)
     {
         /**
          *  The first task to add is the vocoder parameter from the wav using world.
@@ -70,6 +63,18 @@ class WorldProcess implements ProcessInterface
             sp_dir = project.extractWorld.sp_dir
             mgc_dir = new File("$project.buildDir/mgc/")
         }
+    }
+
+    /**
+     *  Method to add the task to the given project.
+     *
+     *
+     *  @param project the project which needs the coefficient extraction
+     */
+    @Override
+    public void addTasks(Project project)
+    {
+        addGenericTasks(project);
 
         /**
          *  This task generate the log f0 file from the f0 file.

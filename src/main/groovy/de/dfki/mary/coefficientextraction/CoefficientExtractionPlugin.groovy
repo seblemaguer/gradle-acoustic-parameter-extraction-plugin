@@ -24,6 +24,7 @@ class CoefficientExtractionPlugin implements Plugin<Project> {
             "straightwavelet": new STRAIGHTWaveletProcess(),
             "straightdnn" :    new STRAIGHTDNNProcess(),
             "world":           new WorldProcess(),
+            "worlddnn":        new WorldDNNProcess(),
         ];
 
 
